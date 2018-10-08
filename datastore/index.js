@@ -13,11 +13,23 @@ exports.create = (text, callback) => {
   callback(null, { id, text });
 };
 
+
+// describe('readAll', () => {
+//   it('should return an empty array when there are no todos', (done) => {
+//     todos.readAll((err, todoList) => {
+//       expect(err).to.be.null;
+//       expect(todoList.length).to.equal(0);
+//       done();
+//     });
+//   });
+//8) should return an empty array when there are no todos
+//9) should return an array with all saved todos
 exports.readAll = (callback) => {
   var data = [];
   _.each(items, (text, id) => {
     data.push({ id, text });
   });
+  console.log('LENGTH OF DATA: ' + data.length);
   callback(null, data);
 };
 
@@ -29,6 +41,12 @@ exports.readOne = (id, callback) => {
     callback(null, { id, text });
   }
 };
+
+// todos.update(todoId, updatedTodoText, (err, todo) => {
+//   const todoFileContents = fs.readFileSync(path.join(todos.dataDir, `${todoId}.txt`)).toString();
+//   expect(todoFileContents).to.equal(updatedTodoText);
+//   done();
+// });
 
 exports.update = (id, text, callback) => {
   var item = items[id];
