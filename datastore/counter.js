@@ -51,15 +51,13 @@ const writeCounter = (count, callback) => {
   //   expect(id).to.exist;
   //   done();
   // });
-exports.getNextUniqueId = (err, id) => {
-  if (err) {
-    throw('error getting next unique id');
-  } else {
-    return zeroPaddedNumber(counter);
-  }
+exports.getNextUniqueId = (callback) => {
+  readCounter((err, currentCounter) => {
+    writeCounter(currentCounter + 1, (err, incrementedCounter) => {
+      callback(null, incrementedCounter);
+    })
+  })
 };
-
-
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
