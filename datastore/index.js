@@ -2,8 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const Promise = require('bluebird');
+const readFilePromise = Promise.promisify(fs.readFile);
 
-var items = {};
+//var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
@@ -17,16 +19,35 @@ exports.create = (text, callback) => {
 
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, files) => {
-    var data = [];
-    for(var i = 0; i<files.length; i++) {
-      var strArr = files[i].split('.');
-      var str = strArr[0];
-      data.push({id: str, text: str});
+    if(err) {
+      callback(err);
+    } else {
+      var data = _.map(files, (file) => {
+        var fileId = path.basename(file, '.txt');
+        var filepath = path.join(exports.dataDir, file);
+        return readFilePromise(filepath).then((fileData) => {
+          return {
+              id: fileId, text: fileData.toString()
+          }
+        })
+      })
+      Promise.all(data).then((items) => {
+        callback(null, items)
+      }, err => callback(err));
     }
-    callback(null, data);
   });
 };
 
+  // fs.readdir(exports.dataDir, (err, files) => {
+  //   var data = [];
+  //   for(var i = 0; i<files.length; i++) {
+  //     var strArr = files[i].split('.');
+  //     var str = strArr[0];
+      
+  //     data.push({id: str, text: str});
+  //   }
+  //   callback(null, data);
+  // });
 exports.readOne = (id, callback) => {
   fs.readFile(`${exports.dataDir}/${id}.txt`, 'utf8', (err, data) => {
     if(err) {
