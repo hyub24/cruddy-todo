@@ -130,10 +130,25 @@ describe('todos', () => {
         });
       });
     });
+    
+    it('should return an array with actual file text', (done) => {
+      const todo1text = 'todo 1';
+      const todo2text = 'todo 2';
+      const expectedTodoList = [{ id: '00001', text: 'todo 1' }, { id: '00002', text: 'todo 2' }];
+      todos.create(todo1text, (err, todo) => {
+        todos.create(todo2text, (err, todo) => {
+          todos.readAll((err, todoList) => {
+            expect(todoList).to.have.lengthOf(2);
+            expect(todoList).to.deep.include.members(expectedTodoList, 'changed text');
+            done();
+          });
+        });
+      });
+    });
 
   });
 
-  xdescribe('readOne', () => {
+  describe('readOne', () => {
     it('should return an error for non-existant todo', (done) => {
       todos.readOne('notAnId', (err, todo) => {
         expect(err).to.exist;
@@ -153,7 +168,7 @@ describe('todos', () => {
     });
   });
 
-  xdescribe('update', () => {
+  describe('update', () => {
     beforeEach((done) => {
       todos.create('original todo', done);
     });
@@ -187,7 +202,7 @@ describe('todos', () => {
     });
   });
 
-  xdescribe('delete', () => {
+  describe('delete', () => {
     beforeEach((done) => {
       todos.create('delete this todo', done);
     });
