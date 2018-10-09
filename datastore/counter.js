@@ -38,25 +38,12 @@ const writeCounter = (count, callback) => {
   });
 };
 
-// it('should use error first callback pattern', (done) => {
-//   counter.getNextUniqueId((err, id) => {
-//     expect(err).to.be.null;
-//     expect(id).to.exist;
-//     done();
-//   });
-// });
-// Public API - Fix this function //////////////////////////////////////////////
-  // counter.getNextUniqueId((err, id) => {
-  //   expect(err).to.be.null;
-  //   expect(id).to.exist;
-  //   done();
-  // });
 exports.getNextUniqueId = (callback) => {
   readCounter((err, currentCounter) => {
     writeCounter(currentCounter + 1, (err, incrementedCounter) => {
       callback(null, incrementedCounter);
-    })
-  })
+    });
+  });
 };
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////

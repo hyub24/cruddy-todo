@@ -8,29 +8,23 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err, id) => {
+    fs.writeFile(exports.dataDir + '/' + id + '.txt', text, () => {
+      callback(null, { id, text});
+    });
+  });
 };
 
-
-// describe('readAll', () => {
-//   it('should return an empty array when there are no todos', (done) => {
-//     todos.readAll((err, todoList) => {
-//       expect(err).to.be.null;
-//       expect(todoList.length).to.equal(0);
-//       done();
-//     });
-//   });
-//8) should return an empty array when there are no todos
-//9) should return an array with all saved todos
 exports.readAll = (callback) => {
-  var data = [];
-  _.each(items, (text, id) => {
-    data.push({ id, text });
-  });
-  console.log('LENGTH OF DATA: ' + data.length);
-  callback(null, data);
+  fs.readdir(exports.dataDir, (err, files) => {
+    var data = [];
+    for(var i = 0; i<files.length; i++) {
+      var strArr = files[i].split('.');
+      var str = strArr[0];
+      data.push({id: str, text: str});
+    }
+    callback(null, data);
+  })
 };
 
 exports.readOne = (id, callback) => {
